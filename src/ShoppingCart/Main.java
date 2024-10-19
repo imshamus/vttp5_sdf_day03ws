@@ -10,6 +10,7 @@ public class Main
 {
     public static void main(String[] args) 
     {
+        List<String> userList = new ArrayList<>();
         Cart cart = new Cart();
         ShoppingCartDB db = new ShoppingCartDB(args);
         String filePath = "";
@@ -31,6 +32,7 @@ public class Main
             {
                 case "login":
                     username = User.userLogin(userInput);
+                    userList.add(username);
                     
                     if (username != null)
                     {
@@ -53,6 +55,10 @@ public class Main
                         System.out.println("Login failed. Please try again.");
                     }
                     break;
+
+                case "users":
+                    User.listUser(userList);
+                    break;    
 
                 case "quit":
                     System.out.println("Thank you! See you again..");

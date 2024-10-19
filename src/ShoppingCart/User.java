@@ -1,5 +1,8 @@
 package src.ShoppingCart;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User 
 {
     private String username;
@@ -27,6 +30,17 @@ public class User
             return null;
         }
         
+    }
+
+    public static void listUser(List<String> userList)
+    {   
+        int i = 1; 
+
+        for (String user : userList)
+        {
+            System.out.printf("%d. %s \n", i, user);
+            i++;
+        }
     }
 
     // Constructor
