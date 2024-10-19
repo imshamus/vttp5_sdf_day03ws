@@ -10,6 +10,7 @@ public class Main
     public static void main(String[] args) 
     {
         Cart cart = new Cart();
+        ShoppingCartDB db = new ShoppingCartDB(args);
         Console cons = System.console();
 
         System.out.println("Welcome to your shopping cart!");
@@ -24,6 +25,21 @@ public class Main
 
             switch (command)
             {
+                case "login":
+                    String username = User.userLogin(userInput);
+                    
+                    if (username != null)
+                    {
+                        User user = new User(username);
+                        String filePath = db.getBaseDir() + "/" + username + ".txt";
+                        db.makeFile(filePath);
+                    }
+                    else
+                    {
+                        System.out.println("Login failed. Please try again.");
+                    }
+                    break;
+
                 case "quit":
                     System.out.println("Thank you! See you again..");
                     return;
@@ -44,6 +60,13 @@ public class Main
                     displayMenu();
                     break;
 
+                // case "load":
+
+                case "save":
+
+                    cart.saveCart(filePath);
+
+
                 default:
                     System.out.println("Please enter a valid input.");
             }      
@@ -53,7 +76,7 @@ public class Main
     public static void displayMenu() // Method 1 - Printing Instructions
     {
         // Create and print menu instructions
-        //  System.out.println("To login other user(s):            Enter 'login'<SPACE><USERNAME>");
+         System.out.println("To login other user(s):            Enter 'login'<SPACE><USERNAME>");
         //  System.out.println("To display list of user(s):        Enter 'users'");
          System.out.println("To display current user's cart:    Enter 'list'");
          System.out.println("To add items to cart:              Enter 'add'<SPACE><ITEM>");

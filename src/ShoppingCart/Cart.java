@@ -1,4 +1,7 @@
 package src.ShoppingCart;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +59,21 @@ public class Cart
                 System.out.printf("%d. %s \n", i+1, items.get(i));
             }
         }
+    }
+
+    public void saveCart(String filePath) throws IOException
+    {
+        FileWriter fw = new FileWriter(filePath, true);
+        BufferedWriter bw = new BufferedWriter(fw);
+
+        for (String item : items)
+        {
+            bw.append(item);
+        }
+
+        bw.flush();
+        bw.close();
+        fw.close();
     }
 
     // GETTERS
