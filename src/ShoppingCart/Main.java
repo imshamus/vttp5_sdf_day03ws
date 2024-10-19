@@ -1,6 +1,7 @@
 package src.ShoppingCart;
 
 import java.io.Console;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,9 @@ public class Main
     {
         Cart cart = new Cart();
         ShoppingCartDB db = new ShoppingCartDB(args);
+        String filePath = "";
+        String username = "";
+
         Console cons = System.console();
 
         System.out.println("Welcome to your shopping cart!");
@@ -26,13 +30,23 @@ public class Main
             switch (command)
             {
                 case "login":
-                    String username = User.userLogin(userInput);
+                    username = User.userLogin(userInput);
                     
                     if (username != null)
                     {
-                        User user = new User(username);
-                        String filePath = db.getBaseDir() + "/" + username + ".txt";
+                        // User user = new User(username);
+                        filePath = db.getBaseDir() + "/" + username + ".txt";
                         db.makeFile(filePath);
+                        
+                        try
+                        {
+                            cart.loadCart(filePath);
+                            System.out.printf("%s's cart loaded from %s. \n", username, filePath);
+                        }
+                        catch (IOException e)
+                        {
+                            System.out.printf("Unable to load %s's cart.", username);
+                        }
                     }
                     else
                     {
@@ -63,8 +77,19 @@ public class Main
                 // case "load":
 
                 case "save":
+                    try
+                    {
+                        cart.saveCart(filePath);
+                        System.out.printf("%s's cart saved at %s. \n", username, filePath);
+                        
+                        break;
+                    }
 
-                    cart.saveCart(filePath);
+                    catch (IOException e)
+                    {
+                        System.out.println("Unable to save cart at " + filePath);
+                    }
+                    
 
 
                 default:
@@ -76,15 +101,14 @@ public class Main
     public static void displayMenu() // Method 1 - Printing Instructions
     {
         // Create and print menu instructions
-         System.out.println("To login other user(s):            Enter 'login'<SPACE><USERNAME>");
-        //  System.out.println("To display list of user(s):        Enter 'users'");
+         System.out.println("To login/load other user's cart:   Enter 'login'<SPACE><USERNAME>");
+         System.out.println("To display list of user(s):        Enter 'users'");
          System.out.println("To display current user's cart:    Enter 'list'");
          System.out.println("To add items to cart:              Enter 'add'<SPACE><ITEM>");
          System.out.println("To delete items from cart:         Enter 'delete'<SPACE><S/N>");
-        //  System.out.println("To save current user's cart:       Enter 'save'");
+         System.out.println("To save current user's cart:       Enter 'save'");
          System.out.println("To terminate program:              Enter 'quit'");
          System.out.println("To display instructions again:     Enter 'menu'"); 
-
     }
 
     public static String parseCommand(String userInput)
@@ -110,26 +134,34 @@ public class Main
 
     public static void handleDeleteItem(String userInput, Cart cart)
     {
-        String[] indexes = userInput.substring(7).split(",");
-        List<Integer> indexList = new ArrayList<>();
-
-        for (int i = 0; i < indexes.length; i++)
+        try
         {
-            indexes[i] = indexes[i].trim();
-        }
+            String[] indexes = userInput.substring(7).split(",");
+            List<Integer> indexList = new ArrayList<>();
 
-        for (String index : indexes)
+            for (int i = 0; i < indexes.length; i++)
+            {
+                indexes[i] = indexes[i].trim();
+            }
+
+            for (String index : indexes)
+            {
+                int i = Integer.parseInt(index);
+                indexList.add(i);
+            }
+
+            Collections.sort(indexList, Collections.reverseOrder()); // Sort in descending order
+
+            for (int index : indexList)
+            {
+                cart.deleteItem(index);
+            }
+        }
+        catch (NumberFormatException e)
         {
-            int i = Integer.parseInt(index);
-            indexList.add(i);
+            System.out.println("Please enter an index.");
         }
-
-        Collections.sort(indexList, Collections.reverseOrder()); // Sort in descending order
-
-        for (int index : indexList)
-        {
-            cart.deleteItem(index);
-        }
+        
     }
 
 }
