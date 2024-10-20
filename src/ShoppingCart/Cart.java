@@ -73,10 +73,15 @@ public class Cart
         FileWriter fw = new FileWriter(filePath, false); // Don't append, overwrite the file.
         BufferedWriter bw = new BufferedWriter(fw);
 
+        int i = 1;
+
         for (String item : items)
         {
-            bw.write(item);
+            String input = Integer.toString(i) + ". " + item;
+            bw.write(input);
             bw.newLine();
+
+            i++;
         }
 
         bw.flush();
